@@ -1,0 +1,15 @@
+<article class="panel panel-default">
+    <div class="panel-heading">
+        <form (ngSubmit)="onSubmit()">
+            <div class="input-group">
+                <input type="text" name="name" class="form-control" [(ngModel)]="name" placeholder="File name..." required>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Open</button>
+                </span>
+            </div><!-- /input-group -->
+        </form>
+    </div>
+    <div class="panel-body">
+        <ace-editor #editor style="height:150px;"></ace-editor>
+    </div>
+</article>
