@@ -24,7 +24,5 @@ export class TokenComponent implements OnInit {
             this.router.navigateByUrl('/');
         });
 
-    });
-}
-
+    }
 }

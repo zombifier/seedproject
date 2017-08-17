@@ -1,9 +1,13 @@
 import { Component } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs/Observable";
 
 import { User } from "./user.model";
 import { AuthService } from "./auth.service";
+
+declare var FB;
+declare var gapi;
 
 @Component({
     selector: 'app-signin',
@@ -64,7 +68,7 @@ export class SigninComponent {
         auth2.signIn().then(response => {
             console.log(response);
             if (response.error) {
-                return Observable.throw(error.json());
+                return Observable.throw(response.error.json());
             }
             var googleProfile = auth2.currentUser.get().getBasicProfile();
             const user = new User(googleProfile.getEmail(), undefined, googleProfile.getGivenName(), googleProfile.getFamilyName(), undefined, undefined, googleProfile.getId(), auth2.currentUser.get().getAuthResponse().id_token);

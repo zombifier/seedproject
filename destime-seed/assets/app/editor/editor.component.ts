@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild } from "@angular/core";
+import { Component, OnInit, AfterViewInit, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 // import { AceEditorComponent } from "ng2-ace-editor";
 
@@ -6,37 +6,19 @@ import { NgForm } from "@angular/forms";
 import { EditorService } from "./editor.service";
 declare var firebase: any;
 declare var Firepad: any;
+declare var ace;
 
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
-    styleUrls: ['./firepad.css'],
-    styles: [`
-        .author {
-            display: inline-block;
-            font-style: italic;
-            font-size: 12px;
-            width: 80%;
-        }
-        .config {
-            display: inline-block;
-            text-align: right;
-            font-size: 12px;
-            width: 19%;
-        }
-        #firepad {
-            width: 700px;
-            height: 450px;
-        }
-    `]
+    styleUrls: ['./firepad.css', './editor.css'],
 })
 
-export class EditorComponent implements OnInit, AfterViewInit, AfterViewChecked {
-    @ViewChild("editor") editor;
-
+export class EditorComponent implements OnInit, AfterViewInit {
     name: string;
     firepadRef: any;
     firepad: any;
+    editor: any;
     
 
     constructor(private editorService: EditorService) {
@@ -46,12 +28,11 @@ export class EditorComponent implements OnInit, AfterViewInit, AfterViewChecked 
     }
 
     ngAfterViewInit() {
-        this.editor.setTheme("eclipse");
-        console.log("view init");
-        console.log("ace inited: " + this.hasInit);
+        this.editor = ace.edit('firepad');
     }
 
     onSubmit() {
+        // TODO: move to editorService
         /*
         this.editorService.newOrOpenFile(this.name)
             .subscribe(
@@ -65,9 +46,8 @@ export class EditorComponent implements OnInit, AfterViewInit, AfterViewChecked 
         */
         
         if (this.firepad) this.firepad.dispose();
-        this.editor.setText();
-        this.editor.getEditor().setValue("");
+        this.editor.setValue("");
         this.firepadRef = firebase.database().ref("firepad/" + this.name);
-        this.firepad = Firepad.fromACE(this.firepadRef, this.editor.getEditor());
+        this.firepad = Firepad.fromACE(this.firepadRef, this.editor);
     }
 }

@@ -18,7 +18,7 @@ import { AuthService } from "./auth/auth.service";
 import { ErrorComponent } from "./errors/error.component";
 import { ErrorService } from "./errors/error.service";
 import { EditorComponent } from "./editor/editor.component";
-import { AceEditorComponent } from "ng2-ace-editor";
+// import { AceEditorComponent } from "ng2-ace-editor";
 import { TokenComponent } from "./auth/token.component";
 
 @NgModule({
@@ -35,7 +35,7 @@ import { TokenComponent } from "./auth/token.component";
         SigninComponent,
         ErrorComponent,
         EditorComponent,
-        AceEditorComponent,
+  //      AceEditorComponent,
         TokenComponent
     ],
     imports: [
