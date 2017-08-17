@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
 
 var appRoutes = require('./routes/app');
 var messageRoutes = require('./routes/messages');
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,6 +38,7 @@ app.use(function (req, res, next) {
 app.use('/message', messageRoutes);
 app.use('/user', userRoutes);
 app.use('/', appRoutes);
+require('./config/passport')(passport);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

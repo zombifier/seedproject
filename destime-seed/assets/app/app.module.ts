@@ -19,6 +19,7 @@ import { ErrorComponent } from "./errors/error.component";
 import { ErrorService } from "./errors/error.service";
 import { EditorComponent } from "./editor/editor.component";
 import { AceEditorComponent } from "ng2-ace-editor";
+import { TokenComponent } from "./auth/token.component";
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { AceEditorComponent } from "ng2-ace-editor";
         SigninComponent,
         ErrorComponent,
         EditorComponent,
-        AceEditorComponent
+        AceEditorComponent,
+        TokenComponent
     ],
     imports: [
         BrowserModule,
