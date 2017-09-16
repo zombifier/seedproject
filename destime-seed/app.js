@@ -10,6 +10,7 @@ var passport = require('passport');
 var appRoutes = require('./routes/app');
 var messageRoutes = require('./routes/messages');
 var userRoutes = require('./routes/user');
+var projectRoutes = require('./routes/projects');
 
 var app = express();
 //modify path based on requirement
@@ -38,6 +39,7 @@ app.use(function (req, res, next) {
 app.use('/message', messageRoutes);
 app.use('/user', userRoutes);
 app.use('/', appRoutes);
+app.use('/projects', projectRoutes);
 require('./config/passport')(passport);
 
 // catch 404 and forward to error handler

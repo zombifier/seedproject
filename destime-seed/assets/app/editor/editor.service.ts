@@ -21,7 +21,43 @@ export class EditorService {
         };
         firebase.initializeApp(config);
     }
-    newOrOpenFile(fileName: String) {}
+    newOrOpenFile(fileName: String) {
+        const body = JSON.stringify({name: fileName});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this.http.post('http://localhost:3000/projects/' + localStorage.projectId + '/file' + token, body, {headers: headers})
+            .map((response: Response) => response.json())
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
+    }
 
-    saveFile(fileName: String) {}
+    newOrOpenProject(projectName: String) {
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this.http.post('http://localhost:3000/projects/create/' + projectName + token, null, {headers: headers})
+            .map((response: Response) => response.json())
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
+    }
+
+    launchProject() {
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this.http.post('http://localhost:3000/projects/' + localStorage.projectId + '/launch' + token, null,  {headers: headers})
+            .map((response: Response) => response.json())
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
+    }
 }

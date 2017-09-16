@@ -16,6 +16,7 @@ declare var ace;
 
 export class EditorComponent implements OnInit, AfterViewInit {
     name: string;
+    projectName: string
     firepadRef: any;
     firepad: any;
     editor: any;
@@ -31,23 +32,40 @@ export class EditorComponent implements OnInit, AfterViewInit {
         this.editor = ace.edit('firepad');
     }
 
-    onSubmit() {
-        // TODO: move to editorService
-        /*
+    openFile() {
+        // tell the server that this file exists
         this.editorService.newOrOpenFile(this.name)
             .subscribe(
                 data => {
                     console.log(data);
-                }
-                error => console.error(error)
+                },
+                error => console.error(error);
             );
 
+
         // Get Firebase Database reference.
-        */
-        
         if (this.firepad) this.firepad.dispose();
         this.editor.setValue("");
-        this.firepadRef = firebase.database().ref("firepad/" + this.name);
+        this.firepadRef = firebase.database().ref("firepad/" + localStorage.projectId + "/" + this.name);
         this.firepad = Firepad.fromACE(this.firepadRef, this.editor);
+    }
+
+    openProject() {
+        this.editorService.newOrOpenProject(this.projectName)
+            .subscribe(
+                data => {
+                    localStorage.setItem('projectId', data.obj._id);
+                },
+                error => console.error(error);
+            );
+    }
+    launchProject() {
+        this.editorService.launchProject(this.projectName)
+            .subscribe(
+                data => {
+                    console.log(data);
+                },
+                error => console.error(error);
+            );
     }
 }

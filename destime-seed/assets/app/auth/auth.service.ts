@@ -12,6 +12,7 @@ declare var gapi;
 @Injectable()
 export class AuthService {
     constructor(private http: Http, private errorService: ErrorService) {
+        /*
         FB.init({
             appId            : '478473549211549',
             autoLogAppEvents : true,
@@ -25,7 +26,7 @@ export class AuthService {
                 cookiepolicy: 'single_host_origin'
             });
 
-        });
+        });*/
     }
 
     signup(user: User) {

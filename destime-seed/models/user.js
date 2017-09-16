@@ -9,6 +9,7 @@ var schema = new Schema({
     password: {type: String, required: false},
     email: {type: String, required: true, unique: true},
     messages: [{type: Schema.Types.ObjectId, ref: 'Message'}],
+    projects: [{type: Schema.Types.ObjectId, ref: 'Project'}],
     facebookID: {type: String, required: false},
     googleID: {type: String, required: false}
 });

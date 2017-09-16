@@ -1,6 +1,17 @@
 <article class="panel panel-default">
     <div class="panel-heading">
-        <form (ngSubmit)="onSubmit()">
+        <form (ngSubmit)="openProject()">
+            <div class="input-group">
+                <input type="text" name="projectName" class="form-control" [(ngModel)]="projectName" placeholder="Project name..." required>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Open</button>
+                </span>
+                <button class="btn btn-default" type="button" (click)="launchProject()">Launch</button>
+            </div><!-- /input-group -->
+        </form>
+    </div>
+    <div class="panel-body">
+        <form (ngSubmit)="openFile()">
             <div class="input-group">
                 <input type="text" name="name" class="form-control" [(ngModel)]="name" placeholder="File name..." required>
                 <span class="input-group-btn">
@@ -8,8 +19,6 @@
                 </span>
             </div><!-- /input-group -->
         </form>
-    </div>
-    <div class="panel-body">
         <div id="firepad"></div>
     </div>
 </article>
