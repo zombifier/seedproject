@@ -1,6 +1,8 @@
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
+var request = require('request');
+var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 var firebase = require('firebase');
 var firepad = require('firepad');
@@ -159,9 +161,42 @@ router.post('/:id/launch', function(req, res, next) {
             }
             if (project.users.find(equalID)) {
                 // make a zip file to upload
-                var output = fs.createWriteStream('/tmp/example.zip');
                 var archive = archiver('zip', {
                     zlib: { level: 9 } // Sets the compression level.
+                });
+                // random name for zip file
+                var zipName = '/tmp/' + crypto.randomBytes(12).toString('hex') + '.zip';
+                var output = fs.createWriteStream(zipName);
+                output.on('close', function() {
+                    var formData = {
+                        userFile: fs.createReadStream(zipName),
+                        userid: user._id.toString(),
+                        platform: 'nodejs'
+                    };
+                    request.post({url: 'http://ec2-52-14-237-235.us-east-2.compute.amazonaws.com:8080/api/awsebs', formData: formData},
+                            function optionalCallback(err, httpResponse, body) {
+                                console.log(body);
+                                if (err) {
+                                    return res.status(401).json({
+                                        title: 'Error uploading',
+                                        error: {message: 'An error has occured while uploading'}
+                                    });
+                                }
+                                var serverResponse = JSON.parse(body);
+                                if (serverResponse.success == false) {
+                                    return res.status(401).json({
+                                        title: 'Error uploading',
+                                        error: {message: 'An error has occured while uploading'}
+                                    });
+                                }
+                                else {
+                                    return res.status(200).json({
+                                        title: "LAUNCHED!",
+                                        id: serverResponse.id
+                                    });
+                                }
+                                fs.unlink(zipName);
+                            });
                 });
                 archive.pipe(output);
                 // create a promises array that reads the content of the files
@@ -169,6 +204,9 @@ router.post('/:id/launch', function(req, res, next) {
                     return new Promise((resolve, reject) => {
                         var ref = firebase.database().ref("firepad/" + project._id + "/" + fileName);
                         var headless = new firepad.Headless(ref);
+                        // undo the encoded filename
+                        fileName = fileName.replace('%2E', '.');
+                        fileName = decodeURIComponent(fileName);
                         headless.getText(function(text) {
                             archive.append(text, { name: fileName });
                             headless.dispose();
@@ -180,9 +218,6 @@ router.post('/:id/launch', function(req, res, next) {
                 Promise.all(promiseArray).then((values) => {
                     // Upload the file to the API
                     archive.finalize();
-                    return res.status(200).json({
-                        title: "LAUNCHED!"
-                    });
                 });
             }
             else {

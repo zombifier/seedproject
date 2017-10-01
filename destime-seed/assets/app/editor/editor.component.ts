@@ -33,20 +33,22 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }
 
     openFile() {
+        // certain characters are forbidden by Firebase in refs, including .'s
+        var fileName = encodeURIComponent(this.name).replace(/\./g, '%2E');
         // tell the server that this file exists
-        this.editorService.newOrOpenFile(this.name)
+        this.editorService.newOrOpenFile(fileName)
             .subscribe(
                 data => {
                     console.log(data);
-                },
-                error => console.error(error);
+                }
+                //error => console.error(error);
             );
 
 
         // Get Firebase Database reference.
         if (this.firepad) this.firepad.dispose();
         this.editor.setValue("");
-        this.firepadRef = firebase.database().ref("firepad/" + localStorage.projectId + "/" + this.name);
+        this.firepadRef = firebase.database().ref("firepad/" + localStorage.projectId + "/" + fileName);
         this.firepad = Firepad.fromACE(this.firepadRef, this.editor);
     }
 
@@ -55,17 +57,21 @@ export class EditorComponent implements OnInit, AfterViewInit {
             .subscribe(
                 data => {
                     localStorage.setItem('projectId', data.obj._id);
-                },
-                error => console.error(error);
+                }
+                //error => console.error(error);
             );
     }
     launchProject() {
-        this.editorService.launchProject(this.projectName)
+        this.editorService.launchProject()
             .subscribe(
                 data => {
-                    console.log(data);
-                },
-                error => console.error(error);
+                    localStorage.setItem('launchedProjectId', data.id);
+                }
+                //error => console.error(error);
             );
+    }
+
+    launchedProject() {
+        return localStorage.getItem('launchedProjectId');
     }
 }
